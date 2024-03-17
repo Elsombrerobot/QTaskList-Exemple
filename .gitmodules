@@ -1,0 +1,3 @@
+[submodule "extern/QTaskList"]
+	path = extern/QTaskList
+	url = https://github.com/Elsombrerobot/QTaskList
