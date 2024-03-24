@@ -16,17 +16,20 @@ public:
 	explicit ConnectionDialog(QWidget* parent = nullptr);
 
 private slots:
-	void AttemptApiConnection();
-	void HandleApiReponse();
-	void AttemptAuth();
-	void HandleAuthResponse();
-	void SetInputsDisabled(bool state);
+	void m_AttemptApiConnection();
+	void m_HandleApiReponse();
+	void m_AttemptAuth();
+	void m_HandleAuthResponse();
+	void m_SetInputsDisabled(bool state);
 
 private:
-	QLineEdit* kitsuApiUrlLineEdit;
-	QLineEdit* mailLineEdit;
-	QLineEdit* passwordLineEdit;
-	QPushButton* connectButton;
+	QLineEdit* m_kitsuApiUrlLineEdit;
+	QLineEdit* m_mailLineEdit;
+	QLineEdit* m_passwordLineEdit;
+	QPushButton* m_connectButton;
+
+private:
+	void m_clearCredentialFields();
 };
 
 #endif // CONNECTION_DIALOG_H

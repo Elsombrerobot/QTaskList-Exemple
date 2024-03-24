@@ -7,9 +7,10 @@
 
 namespace QtUtils
 {
+	// Shorthand type type for headers and url data
 	typedef QMap<QString, QString> QStrMap;
 
-	// Setup an application object.
+	// Setup the application object.
 	QApplication* CreateQApp(int& argc, char** argv)
 	{
 		QApplication* app = new QApplication(argc, argv);

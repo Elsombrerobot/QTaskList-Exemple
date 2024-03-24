@@ -12,7 +12,7 @@
 
 #include "qt_utils.h"
 
-//Singleton for qapp network access manager.
+// Singleton for app network access manager. Doc says one should be enough for an entire app.
 class AppNetworkManager
 {
 public:
@@ -35,9 +35,10 @@ private:
 
 };
 
+// QtNetwork related utils functions, get, posts...
 namespace NetworkUtils
 {
-
+	// Create a QNetworkRequest with given url, headers and url data.
 	QNetworkRequest CreateRequest(
 		const QString& url,
 		const QtUtils::QStrMap& headers = {},
@@ -69,6 +70,7 @@ namespace NetworkUtils
 		return request;
 	}
 
+	// Perform a get onto a given url and return the adress of the reply object.
 	QNetworkReply* Get(
 		const QString& url,
 		const QtUtils::QStrMap& headers = {},
@@ -79,6 +81,7 @@ namespace NetworkUtils
 		return reply;
 	}
 
+	// Perform a post onto a given url and return the adress of the reply object.
 	QNetworkReply* Post(
 		const QString& url,
 		const QtUtils::QStrMap& headers = {},
@@ -89,6 +92,7 @@ namespace NetworkUtils
 		return reply;
 	}
 
+	// Make sure an adress has a trailing slash, useful for url manipulation.
 	QUrl EnsureTrailingSlash(QUrl url)
 	{
 		if (!url.path().endsWith("/"))

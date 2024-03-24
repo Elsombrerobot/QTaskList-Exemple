@@ -22,7 +22,6 @@ int main(int argc, char** argv) {
 	ConnectionDialog connection_dialog;
 	connection_dialog.show();
 
-
 	//Exit app
 	int retCode = app->exec();
 	delete app;

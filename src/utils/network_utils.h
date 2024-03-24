@@ -11,7 +11,6 @@
 
 #include "qt_utils.h"
 
-//Singleton for qapp network access manager.
 class AppNetworkManager
 {
 public:
@@ -22,7 +21,7 @@ public:
 private:
 
 	QNetworkAccessManager m_Manager;
-	QNetworkAccessManager& IManager(); // Internal manager access.
+	QNetworkAccessManager& IManager();
 };
 
 namespace NetworkUtils
@@ -44,8 +43,6 @@ namespace NetworkUtils
 		const QtUtils::QStrMap& urldata = {});
 
 	QUrl EnsureTrailingSlash(QUrl url);
-
-
 }
 
 #endif // NETWORK_UTILS_H
