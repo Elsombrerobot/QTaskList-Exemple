@@ -32,6 +32,9 @@ find_package(Qt6 REQUIRED COMPONENTS
 
 # Setup Qt project
 qt_standard_project_setup()
+
+# Use file(GLOB_RECURSE ...) to generate a list of source files recursively
+file(GLOB_RECURSE MAIN_SOURCES src/*/*.cpp src/*/*.h)
 qt_add_executable($ENV{PRJ_PROJECT_NAME}
     src/main.cpp
 	src/utils/network_utils.h 
@@ -42,6 +45,8 @@ qt_add_executable($ENV{PRJ_PROJECT_NAME}
 	src/utils/kitsu_utils.cpp
 	src/widgets/connection_dialog.h
 	src/widgets/connection_dialog.cpp
+	src/widgets/main_window.h
+	src/widgets/main_window.cpp
 )
 
 target_include_directories($ENV{PRJ_PROJECT_NAME} INTERFACE

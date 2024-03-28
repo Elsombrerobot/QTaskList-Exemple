@@ -1,4 +1,3 @@
-
 #include <QVBoxLayout>
 #include <QMessageBox>
 #include <QObject>
@@ -7,10 +6,18 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QWidget>
+#include <QDialog>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QUrl>
+#include <QString>
 
 #include "connection_dialog.h"
 #include "../utils/qt_utils.h"
 #include "../utils/network_utils.h"
+#include "../utils/kitsu_utils.h"
+
 
 ConnectionDialog::ConnectionDialog(QWidget* parent) : QDialog(parent)
 {
@@ -20,16 +27,20 @@ ConnectionDialog::ConnectionDialog(QWidget* parent) : QDialog(parent)
 	QVBoxLayout* layout = new QVBoxLayout(this);
 
 	m_kitsuApiUrlLineEdit = new QLineEdit(this);
-	m_kitsuApiUrlLineEdit->setPlaceholderText("https://kitsu.my_studio/api/");
+	m_kitsuApiUrlLineEdit->setPlaceholderText("https://kitsu.my_studio.com");
+	m_kitsuApiUrlLineEdit->setClearButtonEnabled(true);
 	layout->addWidget(m_kitsuApiUrlLineEdit);
 
 	m_mailLineEdit = new QLineEdit(this);
 	m_mailLineEdit->setPlaceholderText("name@company.com");
+	m_mailLineEdit->setClearButtonEnabled(true);
 	layout->addWidget(m_mailLineEdit);
 
 	m_passwordLineEdit = new QLineEdit(this);
 	m_passwordLineEdit->setPlaceholderText("Password");
 	m_passwordLineEdit->setEchoMode(QLineEdit::Password);
+	m_passwordLineEdit->setClearButtonEnabled(true);
+
 	layout->addWidget(m_passwordLineEdit);
 
 	m_connectButton = new QPushButton("Connect", this);
@@ -38,153 +49,89 @@ ConnectionDialog::ConnectionDialog(QWidget* parent) : QDialog(parent)
 	setMinimumWidth(400);
 
 	// Connections
-	connect(m_connectButton, &QPushButton::clicked, this, &ConnectionDialog::m_AttemptApiConnection);
-	connect(this, &ConnectionDialog::accepted, qApp, &QApplication::quit); 
+
+	// Attempt connection on click.
+	connect(
+		m_connectButton,
+		SIGNAL(clicked()), 
+		this, SLOT(m_AttemptApiConnection()));
+	
+	// Connect api error connection error to api connection error handler.
+	connect(
+		&KitsuUtils::Api::Get(),
+		SIGNAL(ValidateApiError(QString)),
+		this,
+		SLOT(m_HandleApiConnectionError(QString)));
+
+	// If api validates, try to connect with the password and mail on api auth route.
+	connect(
+		&KitsuUtils::Api::Get(),
+		SIGNAL(ValidateApiSuccess()),
+		this,
+		SLOT(m_AttemptAuth()));
+
+	// Connect auth error to auth error handler.
+	connect(
+		&KitsuUtils::Api::Get(),
+		SIGNAL(AuthError(QString)),
+		this,
+		SLOT(m_HandleAuthError(QString)));
+
+	// Connect auth success to auth success handler.
+	connect(
+		&KitsuUtils::Api::Get(),
+		SIGNAL(AuthSuccess(QJsonObject)),
+		this,
+		SLOT(m_HandleAuthSuccess(QJsonObject)));
 
 }
-
-// Attempt to connect to the kitsu api with the current password and login. Called if m_HandleApiReponse is a success.
-void ConnectionDialog::m_AttemptAuth()
-{
-	m_SetInputsDisabled(true);
-
-	// Create auth url.
-	QUrl baseUrl = NetworkUtils::EnsureTrailingSlash(QUrl(m_kitsuApiUrlLineEdit->text()));
-	QUrl authRoute = QUrl(baseUrl).resolved(QUrl("auth/login"));
-
-	// Setup request.
-	QtUtils::QStrMap urlData;
-	urlData["email"] = m_mailLineEdit->text();
-	urlData["password"] = m_passwordLineEdit->text();
-	QNetworkReply* reply = NetworkUtils::Post(authRoute.toString(), {}, urlData);
-
-	// Connect request to auth response handler.
-	connect(reply, SIGNAL(finished()), this, SLOT(m_HandleAuthResponse()));
-}
-
-// Handle the response from /api/auth/login post request.
-void ConnectionDialog::m_HandleAuthResponse()
-{
-	// Extract reply from sender
-	QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
-
-	// Remove query parameters from the URL
-	//Passing a value of QString() to query (a null QString) unsets the query completely. However, passing a value of QString("") will set the query to an empty value, as if the original URL had a lone "?".
-	QUrl baseUrl = reply->url();
-	baseUrl.setQuery(QString());
-
-	// Check for network errors
-	if (reply->error() != QNetworkReply::NoError)
+	// Test the api connection
+	void ConnectionDialog::m_AttemptApiConnection()
 	{
-		QMessageBox::warning(this, "Error " + baseUrl.toString(), "Connection failed, verify login and password.");
-		m_clearCredentialFields();
-		m_SetInputsDisabled(false);
-		return;
+		setDisabled(true);
+
+		//Set api
+		QString urlFixed = NetworkUtils::EnsureTrailingSlash(m_kitsuApiUrlLineEdit->text());
+		KitsuUtils::Api::SetUrl(urlFixed);
+		KitsuUtils::Api::Validate();
 	}
 
-	// Read the response data
-	QByteArray responseData = reply->readAll();
-	QJsonDocument jsonResponse = QJsonDocument::fromJson(responseData);
-
-	// Check if the response is a valid JSON object
-	if (!jsonResponse.isObject())
+	// If api connection failed show dialog and retry
+	void ConnectionDialog::m_HandleApiConnectionError(QString response)
 	{
-		QMessageBox::warning(this, "Error", "Invalid JSON response from server: " + baseUrl.toString());
-		m_clearCredentialFields();
-		m_SetInputsDisabled(false);
-		return;
-	}
-
-	// Extract the API key from the JSON response
-	QJsonObject jsonObject = jsonResponse.object();
-	QString keyToCheck = "login";
-	QJsonValue apiValue = jsonObject.value(keyToCheck);
-
-	// Check if the API key exists and has a true value
-	if (!apiValue.isBool() || !apiValue.toBool())
-	{
-		QMessageBox::warning(this, "Error", "Invalid login response from server: " + baseUrl.toString());
-		m_clearCredentialFields();
-		m_SetInputsDisabled(false);
-		return;
-	}
-
-	// Connection successful
-	QMessageBox::information(this, "Success", "Connection successful.");
-	accept();
-}
-
-// Attempt get the kitsu /api endpoint {"api" : "Zou"} to ensure instance is up, and the adress is actually a kitsu api.
-void ConnectionDialog::m_AttemptApiConnection()
-{
-	m_SetInputsDisabled(true);
-
-	// Setup request.
-	QString kitsuApiUrl = m_kitsuApiUrlLineEdit->text();
-	QNetworkReply* reply = NetworkUtils::Get(kitsuApiUrl);
-
-	// Connect request to api response handler.
-	connect(reply, SIGNAL(finished()), this, SLOT(m_HandleApiReponse()));
-}
-
-// Handle the response from /api/ get request, if everything works, calls m_AttemptAuth.
-void ConnectionDialog::m_HandleApiReponse()
-{
-	// Extract reply from sender
-	QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
-
-	QString apiUrl = m_kitsuApiUrlLineEdit->text();
-
-	// Check for network errors
-	if (reply->error() != QNetworkReply::NoError)
-	{
-		QMessageBox::warning(this, "Error", "Can't connect to " + apiUrl + ": " + reply->errorString());
+		QMessageBox::warning(this, "Error", response);
 		m_kitsuApiUrlLineEdit->clear();
-		return;
+		setDisabled(false);
 	}
 
-	// Read the response data
-	QByteArray responseData = reply->readAll();
-	QJsonDocument jsonResponse = QJsonDocument::fromJson(responseData);
-
-	// Check if the response is a valid JSON object
-	if (!jsonResponse.isObject())
+	// Attempt auth, not in a lamba for readability + we don't want the two signals of Api to be connected together.
+	void ConnectionDialog::m_AttemptAuth()
 	{
-		QMessageBox::warning(this, "Error", "Invalid JSON response from " + apiUrl);
-		m_kitsuApiUrlLineEdit->clear();
-		return;
+		setDisabled(true);
+		KitsuUtils::Api::Auth(m_mailLineEdit->text(), m_passwordLineEdit->text());
 	}
 
-	// Extract the "api" value from the JSON response
-	QString keyToCheck = "api";
-	QJsonObject jsonObject = jsonResponse.object();
-	QJsonValue apiValue = jsonObject.value(keyToCheck);
-
-	// Check if the "api" value matches the expected value
-	if (apiValue.toString() != "Zou")
+	// If failed show dialog and retry
+	void ConnectionDialog::m_HandleAuthError(QString response)
 	{
-		QMessageBox::warning(this, "Error", "URL is not a Kitsu API instance: " + apiUrl);
-		m_kitsuApiUrlLineEdit->clear();
-		return;
+		QMessageBox::warning(this, "Error", response);
+		m_mailLineEdit->clear();
+		m_passwordLineEdit->clear();
+		setDisabled(false);
 	}
 
-	// Attempt authentication
-	m_AttemptAuth();
-}
+	// On auth success, store user data, and accept dialog, that will trigger the main window.
+	void ConnectionDialog::m_HandleAuthSuccess(QJsonObject userData)
+	{
+		// Convert the JSON object to a string representation
+		QJsonDocument jsonDoc(userData);
+		QString jsonString = jsonDoc.toJson(QJsonDocument::Indented);
 
-// Disable or enable all field inputs, used while waiting for api responses.
-void ConnectionDialog::m_SetInputsDisabled(bool state)
-{
-	m_kitsuApiUrlLineEdit->setDisabled(state);
-	m_mailLineEdit->setDisabled(state);
-	m_passwordLineEdit->setDisabled(state);
-	m_connectButton->setDisabled(state);
-}
+		// Output the string representation to the console
+		qDebug().noquote() << jsonString;
 
-// Clear the credentials inputs, used when login failed.
-void ConnectionDialog::m_clearCredentialFields()
-{
-	m_mailLineEdit->clear();
-	m_passwordLineEdit->clear();
-}
+		QtUtils::CurrentUser::Set(userData);
+		setDisabled(false);
+		//accept();
+	}
 

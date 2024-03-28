@@ -1,12 +1,12 @@
-// connectiondialog.h
 #ifndef CONNECTION_DIALOG_H
 #define CONNECTION_DIALOG_H
 
 #include <QDialog>
 #include <QLineEdit>
 #include <QPushButton>
-#include <QNetworkReply>
-#include <QUrl>
+#include <QWidget.h>
+
+#include "../utils/network_utils.h"
 
 class ConnectionDialog : public QDialog
 {
@@ -17,19 +17,16 @@ public:
 
 private slots:
 	void m_AttemptApiConnection();
-	void m_HandleApiReponse();
+	void m_HandleApiConnectionError(QString response);
 	void m_AttemptAuth();
-	void m_HandleAuthResponse();
-	void m_SetInputsDisabled(bool state);
+	void m_HandleAuthError(QString response);
+	void m_HandleAuthSuccess(QJsonObject userData);
 
 private:
 	QLineEdit* m_kitsuApiUrlLineEdit;
 	QLineEdit* m_mailLineEdit;
 	QLineEdit* m_passwordLineEdit;
 	QPushButton* m_connectButton;
-
-private:
-	void m_clearCredentialFields();
 };
 
 #endif // CONNECTION_DIALOG_H
