@@ -12,8 +12,10 @@
 #include <QPushButton>
 #include <QUrl>
 #include <QString>
+#include <QSizePolicy>
 
 #include "connection_dialog.h"
+#include "loading_button.h"
 #include "../utils/qt_utils.h"
 #include "../utils/network_utils.h"
 #include "../utils/kitsu_utils.h"
@@ -40,13 +42,19 @@ ConnectionDialog::ConnectionDialog(QWidget* parent) : QDialog(parent)
 	m_passwordLineEdit->setPlaceholderText("Password");
 	m_passwordLineEdit->setEchoMode(QLineEdit::Password);
 	m_passwordLineEdit->setClearButtonEnabled(true);
-
 	layout->addWidget(m_passwordLineEdit);
 
-	m_connectButton = new QPushButton("Connect", this);
+	m_connectButton = new LoadingButton("Connect", this);
+	//m_connectButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 	layout->addWidget(m_connectButton);
 
+
 	setMinimumWidth(400);
+
+	// TO REMOVE
+	m_kitsuApiUrlLineEdit->setText("http://172.19.80.178");
+	m_mailLineEdit->setText("iammarcferrer@gmail.com");
+	m_passwordLineEdit->setText("password");
 
 	// Connections
 
@@ -89,6 +97,7 @@ ConnectionDialog::ConnectionDialog(QWidget* parent) : QDialog(parent)
 	void ConnectionDialog::m_AttemptApiConnection()
 	{
 		setDisabled(true);
+		m_connectButton->StartLoading();
 
 		//Set api
 		QString urlFixed = NetworkUtils::EnsureTrailingSlash(m_kitsuApiUrlLineEdit->text());
@@ -99,6 +108,7 @@ ConnectionDialog::ConnectionDialog(QWidget* parent) : QDialog(parent)
 	// If api connection failed show dialog and retry
 	void ConnectionDialog::m_HandleApiConnectionError(QString response)
 	{
+		m_connectButton->StopLoading();
 		QMessageBox::warning(this, "Error", response);
 		m_kitsuApiUrlLineEdit->clear();
 		setDisabled(false);
@@ -108,12 +118,14 @@ ConnectionDialog::ConnectionDialog(QWidget* parent) : QDialog(parent)
 	void ConnectionDialog::m_AttemptAuth()
 	{
 		setDisabled(true);
+		m_connectButton->StartLoading();
 		KitsuUtils::Api::Auth(m_mailLineEdit->text(), m_passwordLineEdit->text());
 	}
 
 	// If failed show dialog and retry
 	void ConnectionDialog::m_HandleAuthError(QString response)
 	{
+		m_connectButton->StopLoading();
 		QMessageBox::warning(this, "Error", response);
 		m_mailLineEdit->clear();
 		m_passwordLineEdit->clear();
@@ -127,11 +139,11 @@ ConnectionDialog::ConnectionDialog(QWidget* parent) : QDialog(parent)
 		QJsonDocument jsonDoc(userData);
 		QString jsonString = jsonDoc.toJson(QJsonDocument::Indented);
 
-		// Output the string representation to the console
 		qDebug().noquote() << jsonString;
 
 		QtUtils::CurrentUser::Set(userData);
 		setDisabled(false);
-		//accept();
+		m_connectButton->StopLoading();
+		accept();
 	}
 

@@ -7,6 +7,7 @@
 #include <QWidget.h>
 
 #include "../utils/network_utils.h"
+#include "loading_button.h"
 
 class ConnectionDialog : public QDialog
 {
@@ -26,7 +27,7 @@ private:
 	QLineEdit* m_kitsuApiUrlLineEdit;
 	QLineEdit* m_mailLineEdit;
 	QLineEdit* m_passwordLineEdit;
-	QPushButton* m_connectButton;
+	LoadingButton* m_connectButton;
 };
 
 #endif // CONNECTION_DIALOG_H

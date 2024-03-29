@@ -1,5 +1,9 @@
 # QTastList-Exemple
 Exemple usage for QTaskList component repo.
+The application connect to a running kistu instance, to display user tasks.
+
+# Screenshots
+* [ ] Todo
 
 # Requirements
 
@@ -33,4 +37,6 @@ Code only tested with **VC 17**.
 
 # Todo
 * [ ] Specify dependencies versions.
+* [ ] Upload executable.
+* [ ] Tag versions, starting a first realease.
 * [ ] Link all the frameworks zou, qt ect...

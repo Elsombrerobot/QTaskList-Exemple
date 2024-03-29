@@ -3,6 +3,7 @@
 #include <QString>
 #include <QJsonObject>
 #include <QJsonDocument>
+#include <QIcon>
 
 #include "../utils/qt_utils.h"
 
@@ -12,6 +13,11 @@ namespace QtUtils
     {
         QApplication* app = new QApplication(argc, argv);
 
+        // Load the icon from the genetared build_windows/qrc_icons.cpp resource file
+        QIcon icon(":/app_icon");
+
+        // Set application properties
+        app->setWindowIcon(icon);
         app->setStyle("fusion");
         app->setApplicationName("QTaskListExemple");
         return app;

@@ -28,13 +28,16 @@ list(APPEND CMAKE_PREFIX_PATH $ENV{QT_PATH})
 find_package(Qt6 REQUIRED COMPONENTS
 	Widgets
 	Network
+	Core
 )
 
 # Setup Qt project
 qt_standard_project_setup()
 
-# Use file(GLOB_RECURSE ...) to generate a list of source files recursively
-file(GLOB_RECURSE MAIN_SOURCES src/*/*.cpp src/*/*.h)
+# Set app icons resources and compile the .qrc file into a .cpp file
+set(APP_ICON_RESOURCE_QRC "${CMAKE_CURRENT_SOURCE_DIR}/resources/qrc/icons.qrc")
+qt6_add_resources(APP_ICON_RESOURCE_CPP ${APP_ICON_RESOURCE_QRC})
+
 qt_add_executable($ENV{PRJ_PROJECT_NAME}
     src/main.cpp
 	src/utils/network_utils.h 
@@ -47,6 +50,11 @@ qt_add_executable($ENV{PRJ_PROJECT_NAME}
 	src/widgets/connection_dialog.cpp
 	src/widgets/main_window.h
 	src/widgets/main_window.cpp
+	src/widgets/loading_button.h
+	src/widgets/loading_button.cpp
+	
+	# App resources
+	${APP_ICON_RESOURCE_CPP}
 )
 
 target_include_directories($ENV{PRJ_PROJECT_NAME} INTERFACE
