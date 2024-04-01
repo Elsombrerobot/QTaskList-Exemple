@@ -29,11 +29,15 @@ Code only tested with **VC 17**.
 - `cd QTaskList-Exemple`
 - Modify QT_PATH in `make.bat`
 - Run `make.bat` with `make`, it will create an out of source build in `build_windows.`
-- Open `build_windows/QTaskListExemple.sln` with MSVC
-- Find the `INSTALL` project in the solution explorer, **right click** and **build**, it will output the executable in `bin/QTaskListExemple/bin/`. 
-- Execute `QTaskListExemple.exe`.
+- Create the executable : 
+- Via **MSVC**
+	- Open `build_windows/QTaskListExemple.sln` with MSVC
+	- Find the `INSTALL` project in the solution explorer, **right click** and **build**.. 
+- Via **cmd**
+	- Run `install.bat` with `install`
+- Execute `build_windows/bin/QTaskListExemple/bin/QTaskListExemple.exe`.
 
-`bin/QTaskListExemple` is the standalone app folder.
+`build_windows/bin/QTaskListExemple` is the standalone app folder.
 
 # Todo
 * [ ] Specify dependencies versions.

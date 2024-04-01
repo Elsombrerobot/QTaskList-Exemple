@@ -3,6 +3,9 @@
 
 #include <QMainWindow>
 #include <QStatusbar>
+#include <QJsonArray>
+
+#include "task_browser.h"
 
 class MainWindow : public QMainWindow
 {
@@ -12,7 +15,9 @@ public:
 	explicit MainWindow(QWidget* parent = nullptr);
 
 private:
+	QJsonArray m_TaskStack;
 	QStatusBar* m_StatusBar;
+	TaskBrowser* m_TaskBrowser;
 
 };
 

@@ -13,6 +13,7 @@
 #include <QUrl>
 #include <QString>
 #include <QSizePolicy>
+#include <QNetworkCookie>
 
 #include "connection_dialog.h"
 #include "loading_button.h"
@@ -26,27 +27,27 @@ ConnectionDialog::ConnectionDialog(QWidget* parent) : QDialog(parent)
 	// Widget setup
 	setWindowTitle("Connect to kitsu instance.");
 
-	QVBoxLayout* layout = new QVBoxLayout(this);
+	m_layout = new QVBoxLayout(this);
 
 	m_kitsuApiUrlLineEdit = new QLineEdit(this);
 	m_kitsuApiUrlLineEdit->setPlaceholderText("https://kitsu.my_studio.com");
 	m_kitsuApiUrlLineEdit->setClearButtonEnabled(true);
-	layout->addWidget(m_kitsuApiUrlLineEdit);
+	m_layout->addWidget(m_kitsuApiUrlLineEdit);
 
 	m_mailLineEdit = new QLineEdit(this);
 	m_mailLineEdit->setPlaceholderText("name@company.com");
 	m_mailLineEdit->setClearButtonEnabled(true);
-	layout->addWidget(m_mailLineEdit);
+	m_layout->addWidget(m_mailLineEdit);
 
 	m_passwordLineEdit = new QLineEdit(this);
 	m_passwordLineEdit->setPlaceholderText("Password");
 	m_passwordLineEdit->setEchoMode(QLineEdit::Password);
 	m_passwordLineEdit->setClearButtonEnabled(true);
-	layout->addWidget(m_passwordLineEdit);
+	m_layout->addWidget(m_passwordLineEdit);
 
 	m_connectButton = new LoadingButton("Connect", this);
 	//m_connectButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-	layout->addWidget(m_connectButton);
+	m_layout->addWidget(m_connectButton);
 
 
 	setMinimumWidth(400);
@@ -110,7 +111,6 @@ ConnectionDialog::ConnectionDialog(QWidget* parent) : QDialog(parent)
 	{
 		m_connectButton->StopLoading();
 		QMessageBox::warning(this, "Error", response);
-		m_kitsuApiUrlLineEdit->clear();
 		setDisabled(false);
 	}
 
@@ -127,7 +127,6 @@ ConnectionDialog::ConnectionDialog(QWidget* parent) : QDialog(parent)
 	{
 		m_connectButton->StopLoading();
 		QMessageBox::warning(this, "Error", response);
-		m_mailLineEdit->clear();
 		m_passwordLineEdit->clear();
 		setDisabled(false);
 	}
@@ -135,13 +134,10 @@ ConnectionDialog::ConnectionDialog(QWidget* parent) : QDialog(parent)
 	// On auth success, store user data, and accept dialog, that will trigger the main window.
 	void ConnectionDialog::m_HandleAuthSuccess(QJsonObject userData)
 	{
-		// Convert the JSON object to a string representation
-		QJsonDocument jsonDoc(userData);
-		QString jsonString = jsonDoc.toJson(QJsonDocument::Indented);
 
-		qDebug().noquote() << jsonString;
-
+		// Set user for application
 		QtUtils::CurrentUser::Set(userData);
+
 		setDisabled(false);
 		m_connectButton->StopLoading();
 		accept();

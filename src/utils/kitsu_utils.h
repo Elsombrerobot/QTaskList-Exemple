@@ -12,9 +12,11 @@
 namespace KitsuUtils
 {
     namespace Routes {
-        // Makes it defined in header, since we onlt need it in one file.
+        // Different routes of the api for GetRoute method are defined here.
         inline QString Auth = "/api/auth/login";
         inline QString Api = "/api";
+        inline QString UserTasks = "/api/data/persons/{person_id}/tasks";
+        inline QString UserDoneTasks = "/api/data/persons/{person_id}/done-tasks";
     }
 
     class Api : public QObject
@@ -22,42 +24,33 @@ namespace KitsuUtils
         Q_OBJECT
 
     public:
-
-        // Static function to access the singleton instance
         static Api& Get();
-
-        // Static function to access the singleton instance
         static QString BaseUrl();
-
-        // Static function to set the URL
         static void SetUrl(QString url);
-
-        // Static function for validation
         static void Validate();
-
-        // Static function for authentication
         static void Auth(QString email, QString password);
-
-        // Construct any route for the api
-        static QString GetRoute(QString route);
+        static void GetTasks(bool done);
+        static QString GetRoute(QString route, const QtUtils::QStrMap& formatData = {});
 
     private:
-        // Private constructor to prevent external instantiation
         explicit Api(QObject* parent = nullptr);
-
-        // Private member for storing the URL
         QString m_BaseUrl;
 
     signals:
         void ValidateApiError(QString message);
         void ValidateApiSuccess();
+
         void AuthError(QString message);
         void AuthSuccess(QJsonObject userData);
+
+        void GetTasksError(QString message);
+        void GetTasksSuccess(QJsonArray tasksData);
 
 
     private slots:
         void m_HandleValidateResponse(); 
         void m_HandleAuthResponse();
+        void m_HandleGetTasksResponse();
     };
 }
 

@@ -14,23 +14,24 @@
 #include "network_utils.h"
 
 
-// Singleton for app network access manager. Doc says one should be enough for an entire app.
-
-AppNetworkManager::AppNetworkManager() {};
-
-AppNetworkManager& AppNetworkManager::Get()
-{
-	static AppNetworkManager s_Instance;
-	return s_Instance;
-}
-
-QNetworkAccessManager& AppNetworkManager::Manager() { return Get().IManager(); };
-QNetworkAccessManager& AppNetworkManager::IManager() { return m_Manager; };
-
 
 // QtNetwork related utils functions, get, posts...
 namespace NetworkUtils
 {
+
+	// Singleton for app network access manager. Doc says one should be enough for an entire app.
+	AppNetworkManager::AppNetworkManager()
+	{
+		m_Manager = new QNetworkAccessManager(this);
+	};
+
+	AppNetworkManager* AppNetworkManager::Get()
+	{
+		static AppNetworkManager* s_Instance = new AppNetworkManager();
+		return s_Instance;
+	}
+
+	QNetworkAccessManager* AppNetworkManager::Manager() { return Get()->m_Manager; };
 
 	// Create a QNetworkRequest with given url, headers and url data.
 	QNetworkRequest CreateRequest(
@@ -74,8 +75,9 @@ namespace NetworkUtils
 		quint16 msTimeout
 		)
 	{
+
 		QNetworkRequest request = CreateRequest(url, headers, urldata, msTimeout);
-		QNetworkReply* reply = AppNetworkManager::Manager().get(request);
+		QNetworkReply* reply = AppNetworkManager::Manager()->get(request);
 		return reply;
 	}
 
@@ -88,7 +90,7 @@ namespace NetworkUtils
 		)
 	{
 		QNetworkRequest request = CreateRequest(url, headers, urldata, msTimeout);
-		QNetworkReply* reply = AppNetworkManager::Manager().post(request, QByteArray{});
+		QNetworkReply* reply = AppNetworkManager::Manager()->post(request, QByteArray{});
 		return reply;
 	}
 
@@ -101,7 +103,7 @@ namespace NetworkUtils
 	}
 
 	// Read the data from a network reply as json, Return empty object if parsing fails.
-	QJsonObject ReadReplyData(QNetworkReply* reply)
+	QJsonObject ReadJsonReply(QNetworkReply* reply)
 	{
 		// Read the response data
 		QByteArray responseData = reply->readAll();
@@ -112,6 +114,20 @@ namespace NetworkUtils
 			return QJsonObject();
 		}
 		return jsonResponse.object();
+	}
+
+	// Read the data from a network reply as array, Return empty object if parsing fails.
+	QJsonArray ReadArrayReply(QNetworkReply* reply)
+	{
+		// Read the response data
+		QByteArray responseData = reply->readAll();
+		QJsonDocument jsonResponse = QJsonDocument::fromJson(responseData);
+		QJsonParseError jsonError;
+		if (jsonError.error != QJsonParseError::NoError)
+		{
+			return QJsonArray();
+		}
+		return jsonResponse.array();
 	}
 
 }

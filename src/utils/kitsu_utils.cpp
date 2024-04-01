@@ -1,11 +1,15 @@
 #include <QString>
 #include <QObject>
 #include <QNetworkReply>
+#include <QByteArray>
+#include <QJsonObject>
+#include <QJsonDocument>
 
 #include "kitsu_utils.h"
 #include "qt_utils.h"
 #include "network_utils.h"
 
+// Function and utils related to kitsu, api, tasks..
 namespace KitsuUtils
 {
 
@@ -30,14 +34,19 @@ namespace KitsuUtils
         Get().m_BaseUrl = url;
     }
 
-    // Route getter
-    QString Api::GetRoute(QString route)
+    // Route getter. Formats "{key}" in route wih given value {"key" : "value"} for key in formatData.
+    // Routes for route param are defined in header, ex: Api::Route::Auth
+    QString Api::GetRoute(QString route, const QtUtils::QStrMap& formatData)
     {
+        // Add data to the url
+        for (const auto [k, v] : formatData.asKeyValueRange())
+        {
+            route.replace('{' + k + '}', v);
+        }
         QUrl url = QUrl(Api::BaseUrl());
         url.setPath(route);
         return url.toString();
     }
-
 
     // Starts the verification of the kitsu api url.
     void Api::Validate() 
@@ -65,7 +74,7 @@ namespace KitsuUtils
 	    }
 
         // Validate reply json response
-        QJsonObject replyData = NetworkUtils::ReadReplyData(reply);
+        QJsonObject replyData = NetworkUtils::ReadJsonReply(reply);
         if (replyData.isEmpty())
         {
             QString message = "Failed to read server response.";
@@ -130,7 +139,7 @@ namespace KitsuUtils
         }
 
         // Validate reply json response
-        QJsonObject replyData = NetworkUtils::ReadReplyData(reply);
+        QJsonObject replyData = NetworkUtils::ReadJsonReply(reply);
         if (replyData.isEmpty())
         {
             QString message = "Failed to read server response.";
@@ -159,5 +168,57 @@ namespace KitsuUtils
         emit AuthSuccess(replyData);
     }
 
+    // Start the user credentials verifications.
+    void Api::GetTasks(bool done)
+    {
+        // Create route with current user id
+        QtUtils::QStrMap formatData;
+        formatData["person_id"] = QtUtils::CurrentUser::Id();
 
+        // Create header cookie with current user token (can't work this out with QNetworkCookie and QNetworkCookieJar)
+        QtUtils::QStrMap headers;
+        headers["Authorization"] = QByteArray("Bearer ") + QtUtils::CurrentUser::AccessToken().toUtf8();
+
+        // Choose done task route or regular task task route. 
+        QString route = done ? Routes::UserDoneTasks : Routes::UserTasks;
+
+        // Format route with user id
+        QString url = Api::GetRoute(route, formatData);
+
+        // Send post request to the endpoint with formated url and header. Also give 30 seconds timeout.
+        QNetworkReply* reply = NetworkUtils::Get(url, headers, {}, NetworkUtils::Timeout::MsLong);
+
+        // Connect request to get tasks response handler.
+        connect(reply, SIGNAL(finished()), &Get(), SLOT(m_HandleGetTasksResponse()));
+    }
+
+    // Handle success or error for GetTasks
+    void Api::m_HandleGetTasksResponse()
+    {
+        // Extract reply from sender
+        QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
+
+        // Check for network errors
+        if (reply->error() != QNetworkReply::NoError)
+        {
+            QString message = "Failed to fetch tasks : " + reply->errorString();
+            emit GetTasksError(message);
+            return;
+        }
+
+        // Validate reply json response
+        QJsonArray replyData = NetworkUtils::ReadArrayReply(reply);
+        if (replyData.isEmpty())
+        {
+            QString message = "Failed to read server response.";
+            emit GetTasksError(message);
+            return;
+        }
+
+        // Clean reply
+        reply->deleteLater();
+
+        // Get tasks successful, emit tasks data
+        emit GetTasksSuccess(replyData);
+    }
 }

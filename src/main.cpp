@@ -3,8 +3,6 @@
 #include <QObject>
 #include <QDialog>
 
-// External submodules
-#include "qtasklist.h"
 
 // Internals
 #include "utils/qt_utils.h"

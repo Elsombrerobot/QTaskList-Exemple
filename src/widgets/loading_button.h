@@ -21,17 +21,19 @@ public:
     void StopLoading();
 
     // Overload setText
-    void SetButtonText(const QString& text);
+    void SetButtonText(QString text);
 
 private:
     QString m_baseText;
-    QTimer m_Timer;
+    QTimer* m_Timer;
 
     const QString brailleChars[4] = {
         QChar(0x2834), QChar(0x2826), QChar(0x2816), QChar(0x2832),
     };
     quint8 currentFrameIndex = 0;
 
+
+private slots:
     // Method to update the text animation
     void m_UpdateAnimation();
 

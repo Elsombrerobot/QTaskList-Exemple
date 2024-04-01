@@ -8,29 +8,32 @@
 #include <QObject>
 #include <QNetworkRequest>
 #include <QNetworkAccessManager>
+#include <QList>
 #include <QNetworkReply>
+#include <QJsonArray>
 
 #include "qt_utils.h"
 
-class AppNetworkManager
-{
-public:
-
-	static AppNetworkManager& Get();
-	static QNetworkAccessManager& Manager();
-
-private:
-
-	AppNetworkManager();
-	AppNetworkManager(const AppNetworkManager&) = delete;
-
-	QNetworkAccessManager m_Manager;
-	QNetworkAccessManager& IManager();
-};
-
-
 namespace NetworkUtils
 {
+	class AppNetworkManager : public QObject
+	{
+	
+		Q_OBJECT
+
+	public:
+
+		static AppNetworkManager* Get();
+		static QNetworkAccessManager* Manager();
+
+	private:
+
+		AppNetworkManager();
+		AppNetworkManager(const AppNetworkManager&) = delete;
+
+		QNetworkAccessManager* m_Manager;
+	};
+
 	enum Timeout : quint16
 	{
 		MsNormal = 5000,
@@ -56,7 +59,8 @@ namespace NetworkUtils
 		quint16 msTimeout = Timeout::MsNormal);
 
 	QString EnsureTrailingSlash(QString url);
-	QJsonObject ReadReplyData(QNetworkReply* reply);
+	QJsonObject ReadJsonReply(QNetworkReply* reply);
+	QJsonArray ReadArrayReply(QNetworkReply* reply);
 }
 
 #endif // NETWORK_UTILS_H

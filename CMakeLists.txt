@@ -40,18 +40,24 @@ qt6_add_resources(APP_ICON_RESOURCE_CPP ${APP_ICON_RESOURCE_QRC})
 
 qt_add_executable($ENV{PRJ_PROJECT_NAME}
     src/main.cpp
+	
 	src/utils/network_utils.h 
 	src/utils/network_utils.cpp 
 	src/utils/qt_utils.h 
 	src/utils/qt_utils.cpp
 	src/utils/kitsu_utils.h 
 	src/utils/kitsu_utils.cpp
+	
 	src/widgets/connection_dialog.h
 	src/widgets/connection_dialog.cpp
 	src/widgets/main_window.h
 	src/widgets/main_window.cpp
 	src/widgets/loading_button.h
 	src/widgets/loading_button.cpp
+	src/widgets/task_loader.h
+	src/widgets/task_loader.cpp
+	src/widgets/task_browser.h
+	src/widgets/task_browser.cpp
 	
 	# App resources
 	${APP_ICON_RESOURCE_CPP}

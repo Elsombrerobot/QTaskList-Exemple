@@ -4,7 +4,8 @@
 #include <QDialog>
 #include <QLineEdit>
 #include <QPushButton>
-#include <QWidget.h>
+#include <QVBoxLayout>
+#include <QWidget>
 
 #include "../utils/network_utils.h"
 #include "loading_button.h"
@@ -24,6 +25,7 @@ private slots:
 	void m_HandleAuthSuccess(QJsonObject userData);
 
 private:
+	QVBoxLayout* m_layout;
 	QLineEdit* m_kitsuApiUrlLineEdit;
 	QLineEdit* m_mailLineEdit;
 	QLineEdit* m_passwordLineEdit;
