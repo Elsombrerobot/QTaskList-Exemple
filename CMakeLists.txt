@@ -21,14 +21,12 @@ set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT $
 
 # --------- Qt6 ---------
 
-# Find Qt6
-list(APPEND CMAKE_PREFIX_PATH $ENV{QT_PATH})
-
 # Find qt6 and needed components
 find_package(Qt6 REQUIRED COMPONENTS
 	Widgets
 	Network
 	Core
+	Gui
 )
 
 # Setup Qt project
@@ -81,6 +79,8 @@ install(SCRIPT ${deploy_script})
 target_link_libraries($ENV{PRJ_PROJECT_NAME} PRIVATE
 	Qt6::Widgets
 	Qt6::Network
+	Qt6::Core
+	Qt6::Gui
 )
 
 # --------- QTaskList ---------

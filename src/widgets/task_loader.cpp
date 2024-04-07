@@ -10,7 +10,7 @@
 #include "task_loader.h"
 #include "loading_button.h"
 
-// Gui widget to query user tasks
+// Gui widget to query user tasks, and user done tasks.
 TaskLoader::TaskLoader(QWidget* parent) : QWidget(parent)
 {
     // Create button and checkbox
@@ -43,7 +43,7 @@ TaskLoader::TaskLoader(QWidget* parent) : QWidget(parent)
         SLOT(m_HandleLoadTasksSuccess(QJsonArray)));
 }
 
-// Make the qury to get user tasks
+// Make the query to get user tasks / done tasks.
 void TaskLoader::m_LoadTasks()
 {
     setDisabled(true);

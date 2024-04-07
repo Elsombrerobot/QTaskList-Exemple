@@ -16,8 +16,8 @@ public:
 
 private:
 	QJsonArray m_TaskStack;
-	QStatusBar* m_StatusBar;
-	TaskBrowser* m_TaskBrowser;
+	QStatusBar* m_statusBar;
+	TaskBrowser* m_taskBrowser;
 
 };
 

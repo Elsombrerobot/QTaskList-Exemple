@@ -5,28 +5,26 @@
 #include <QLabel>
 #include <QJsonArray>
 #include <QSplitter>
-
+#include <QSizePolicy>
 
 #include "main_window.h"
 #include "task_browser.h"
 #include "../utils/qt_utils.h"
 
-
+// A Simple main window to contain the main widget TaskBrowser.
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
 {
-	// Create TaskBrowser instance with the taskStack argument
-	m_TaskStack = QJsonArray();
-	m_TaskBrowser = new TaskBrowser(m_TaskStack, this);
+	//Resize
+	resize(1200, 700);
+
+	// Create TaskBrowser instance.
+	m_taskBrowser = new TaskBrowser(this);
 
 	// Widget setup
-	m_StatusBar = new QStatusBar(this);
-	setStatusBar(m_StatusBar);
-
-	setCentralWidget(m_TaskBrowser);
+	m_statusBar = new QStatusBar(this);
+	setStatusBar(m_statusBar);
+	setCentralWidget(m_taskBrowser);
 
 	// Show message
-	m_StatusBar->showMessage("Connection as " + QtUtils::CurrentUser::FullName() + " successful !", 4000);
-
-	// Resize window
-	resize(1200, 700);
+	m_statusBar->showMessage("Connection as " + QtUtils::CurrentUser::FullName() + " successful !", 4000);
 }
