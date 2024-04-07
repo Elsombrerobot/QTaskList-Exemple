@@ -1,10 +1,7 @@
-// Externals
 #include <QApplication>
 #include <QObject>
 #include <QDialog>
 
-
-// Internals
 #include "utils/qt_utils.h"
 #include "widgets/connection_dialog.h"
 #include "widgets/main_window.h"

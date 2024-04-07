@@ -13,7 +13,6 @@
 #include <QUrl>
 #include <QString>
 #include <QSizePolicy>
-#include <QNetworkCookie>
 
 #include "connection_dialog.h"
 #include "loading_button.h"
@@ -21,7 +20,7 @@
 #include "../utils/network_utils.h"
 #include "../utils/kitsu_utils.h"
 
-
+// Widget to get kitsu api url and logs from user, and try connection.
 ConnectionDialog::ConnectionDialog(QWidget* parent) : QDialog(parent)
 {
 	// Widget setup
@@ -48,7 +47,6 @@ ConnectionDialog::ConnectionDialog(QWidget* parent) : QDialog(parent)
 	m_connectButton = new LoadingButton("Connect", this);
 	//m_connectButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 	m_layout->addWidget(m_connectButton);
-
 
 	setMinimumWidth(400);
 
@@ -92,54 +90,52 @@ ConnectionDialog::ConnectionDialog(QWidget* parent) : QDialog(parent)
 		SIGNAL(AuthSuccess(QJsonObject)),
 		this,
 		SLOT(m_HandleAuthSuccess(QJsonObject)));
-
 }
-	// Test the api connection
-	void ConnectionDialog::m_AttemptApiConnection()
-	{
-		setDisabled(true);
-		m_connectButton->StartLoading();
 
-		//Set api
-		QString urlFixed = NetworkUtils::EnsureTrailingSlash(m_kitsuApiUrlLineEdit->text());
-		KitsuUtils::Api::SetUrl(urlFixed);
-		KitsuUtils::Api::Validate();
-	}
+// Test the api connection
+void ConnectionDialog::m_AttemptApiConnection()
+{
+	setDisabled(true);
+	m_connectButton->StartLoading();
 
-	// If api connection failed show dialog and retry
-	void ConnectionDialog::m_HandleApiConnectionError(QString response)
-	{
-		m_connectButton->StopLoading();
-		QMessageBox::warning(this, "Error", response);
-		setDisabled(false);
-	}
+	//Set api
+	QString urlFixed = NetworkUtils::EnsureTrailingSlash(m_kitsuApiUrlLineEdit->text());
+	KitsuUtils::Api::SetUrl(urlFixed);
+	KitsuUtils::Api::Validate();
+}
 
-	// Attempt auth, not in a lamba for readability + we don't want the two signals of Api to be connected together.
-	void ConnectionDialog::m_AttemptAuth()
-	{
-		setDisabled(true);
-		m_connectButton->StartLoading();
-		KitsuUtils::Api::Auth(m_mailLineEdit->text(), m_passwordLineEdit->text());
-	}
+// If api connection failed show dialog and retry
+void ConnectionDialog::m_HandleApiConnectionError(QString response)
+{
+	m_connectButton->StopLoading();
+	QMessageBox::warning(this, "Error", response);
+	setDisabled(false);
+}
 
-	// If failed show dialog and retry
-	void ConnectionDialog::m_HandleAuthError(QString response)
-	{
-		m_connectButton->StopLoading();
-		QMessageBox::warning(this, "Error", response);
-		m_passwordLineEdit->clear();
-		setDisabled(false);
-	}
+// Attempt auth, not in a lamba for readability + we don't want the two signals of Api to be connected together.
+void ConnectionDialog::m_AttemptAuth()
+{
+	setDisabled(true);
+	m_connectButton->StartLoading();
+	KitsuUtils::Api::Auth(m_mailLineEdit->text(), m_passwordLineEdit->text());
+}
 
-	// On auth success, store user data, and accept dialog, that will trigger the main window.
-	void ConnectionDialog::m_HandleAuthSuccess(QJsonObject userData)
-	{
+// If failed show dialog and retry
+void ConnectionDialog::m_HandleAuthError(QString response)
+{
+	m_connectButton->StopLoading();
+	QMessageBox::warning(this, "Error", response);
+	m_passwordLineEdit->clear();
+	setDisabled(false);
+}
 
-		// Set user for application
-		QtUtils::CurrentUser::Set(userData);
+// On auth success, store user data, and accept dialog, that will trigger the main window.
+void ConnectionDialog::m_HandleAuthSuccess(QJsonObject userData)
+{
+	// Set user for application
+	QtUtils::CurrentUser::Set(userData);
 
-		setDisabled(false);
-		m_connectButton->StopLoading();
-		accept();
-	}
-
+	setDisabled(false);
+	m_connectButton->StopLoading();
+	accept();
+}

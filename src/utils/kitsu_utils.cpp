@@ -12,7 +12,6 @@
 // Function and utils related to kitsu, api, tasks..
 namespace KitsuUtils
 {
-
     Api::Api(QObject* parent) : QObject(parent) {}
 
     // Initialize static member
@@ -101,7 +100,6 @@ namespace KitsuUtils
 
         // Clean reply
         reply->deleteLater();
-
     }
 
     // Start the user credentials verifications.
@@ -135,7 +133,6 @@ namespace KitsuUtils
             QString message = "Connection to " + baseUrl.toString() + " failed, verify login and password.";
             emit AuthError(message);
             return;
-
         }
 
         // Validate reply json response
@@ -145,7 +142,6 @@ namespace KitsuUtils
             QString message = "Failed to read server response.";
             emit AuthError(message);
             return;
-
         }
 
         // Extract the "api" value from the JSON response

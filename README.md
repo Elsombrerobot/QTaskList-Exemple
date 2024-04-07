@@ -1,5 +1,5 @@
 # QTastList-Exemple
-The application connect to a running kistu instance, to display user tasks.
+The application connect to a running [Kitsu](https://www.cg-wire.com/fr/kitsu) instance, to display user tasks.
 It uses [QTaskList](https://github.com/Elsombrerobot/QTaskList) as a submodule for the main filtering widget, and displaying widget.
 
 # Screenshots and videos

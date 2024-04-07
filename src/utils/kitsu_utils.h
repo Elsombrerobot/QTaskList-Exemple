@@ -11,8 +11,9 @@
 
 namespace KitsuUtils
 {
-    namespace Routes {
-        // Different routes of the api for GetRoute method are defined here.
+    // Different routes of the api for GetRoute method are defined here.
+    namespace Routes
+    {
         inline QString Auth = "/api/auth/login";
         inline QString Api = "/api";
         inline QString UserTasks = "/api/data/persons/{person_id}/tasks";
@@ -45,7 +46,6 @@ namespace KitsuUtils
 
         void GetTasksError(QString message);
         void GetTasksSuccess(QJsonArray tasksData);
-
 
     private slots:
         void m_HandleValidateResponse(); 

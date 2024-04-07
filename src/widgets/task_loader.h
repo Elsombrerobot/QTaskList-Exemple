@@ -7,7 +7,8 @@
 
 #include "loading_button.h"
 
-class TaskLoader : public QWidget {
+class TaskLoader : public QWidget
+{
     Q_OBJECT
 public:
     explicit TaskLoader(QWidget* parent = nullptr);
@@ -27,6 +28,5 @@ private slots:
     void m_HandleLoadTasksSuccess(QJsonArray tasksData);
     void m_LoadTasks();
 };
-
 
 #endif // TASK_LOADER_H

@@ -13,12 +13,9 @@
 #include "qt_utils.h"
 #include "network_utils.h"
 
-
-
 // QtNetwork related utils functions, get, posts...
 namespace NetworkUtils
 {
-
 	// Singleton for app network access manager. Doc says one should be enough for an entire app.
 	AppNetworkManager::AppNetworkManager()
 	{
@@ -50,6 +47,7 @@ namespace NetworkUtils
 		{
 			qqurl.addQueryItem(k, v);
 		}
+
 		// Set the content type.
 		qurl.setQuery(qqurl);
 
@@ -62,6 +60,8 @@ namespace NetworkUtils
 		{
 			request.setRawHeader(k.toUtf8(), v.toUtf8());
 		}
+
+		// Set content type for all requests.
 		request.setRawHeader("content-type", "application/x-www-form-urlencoded");
 
 		return request;
@@ -129,5 +129,4 @@ namespace NetworkUtils
 		}
 		return jsonResponse.array();
 	}
-
 }

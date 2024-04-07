@@ -18,7 +18,6 @@ namespace QtUtils
     class CurrentUser
     {
     public:
-
         static CurrentUser& Get();
         static QJsonObject& Data();
         static void Set(QJsonObject& data);
@@ -27,7 +26,6 @@ namespace QtUtils
         static QString AccessToken();
 
     private:
-
         QJsonObject m_Data;
         CurrentUser();
         QJsonObject& IData();

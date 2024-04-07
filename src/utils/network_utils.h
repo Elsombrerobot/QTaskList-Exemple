@@ -18,16 +18,13 @@ namespace NetworkUtils
 {
 	class AppNetworkManager : public QObject
 	{
-	
 		Q_OBJECT
 
 	public:
-
 		static AppNetworkManager* Get();
 		static QNetworkAccessManager* Manager();
 
 	private:
-
 		AppNetworkManager();
 		AppNetworkManager(const AppNetworkManager&) = delete;
 

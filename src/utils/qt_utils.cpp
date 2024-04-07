@@ -9,6 +9,7 @@
 
 namespace QtUtils
 {
+    // Create a QApplication with all needed configuration.
     QApplication* CreateQApp(int& argc, char** argv)
     {
         QApplication* app = new QApplication(argc, argv);
@@ -56,5 +57,4 @@ namespace QtUtils
     QJsonObject& CurrentUser::IData() {
         return m_Data;
     }
-
 }
