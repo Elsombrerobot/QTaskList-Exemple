@@ -38,6 +38,7 @@ qt6_add_resources(APP_ICON_RESOURCE_CPP ${APP_ICON_RESOURCE_QRC})
 
 qt_add_executable($ENV{PRJ_PROJECT_NAME}
     src/main.cpp
+	src/version.h
 	
 	src/utils/network_utils.h 
 	src/utils/network_utils.cpp 

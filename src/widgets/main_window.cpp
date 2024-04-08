@@ -14,6 +14,9 @@
 // A Simple main window to contain the main widget TaskBrowser.
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
 {
+	// Set window title
+	setWindowTitle(QtUtils::GetWindowName());
+
 	//Resize
 	resize(1200, 700);
 

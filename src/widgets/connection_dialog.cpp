@@ -24,7 +24,7 @@
 ConnectionDialog::ConnectionDialog(QWidget* parent) : QDialog(parent)
 {
 	// Widget setup
-	setWindowTitle("Connect to kitsu instance.");
+	setWindowTitle(QtUtils::GetWindowName() + " - Connect to kitsu instance.");
 
 	m_layout = new QVBoxLayout(this);
 

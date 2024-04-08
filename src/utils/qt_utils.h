@@ -12,8 +12,8 @@ namespace QtUtils
     // Shorthand type for headers and url data
     typedef QMap<QString, QString> QStrMap;
 
-    // Setup an application object.
     QApplication* CreateQApp(int& argc, char** argv);
+    QString GetWindowName();
 
     class CurrentUser
     {
@@ -24,6 +24,7 @@ namespace QtUtils
         static QString FullName();
         static QString Id();
         static QString AccessToken();
+        bool connected;
 
     private:
         QJsonObject m_Data;

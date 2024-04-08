@@ -7,6 +7,7 @@
 #include <QJsonDocument>
 
 #include "../utils/kitsu_utils.h"
+#include "../utils/qt_utils.h"
 #include "task_loader.h"
 #include "loading_button.h"
 
@@ -15,8 +16,10 @@ TaskLoader::TaskLoader(QWidget* parent) : QWidget(parent)
 {
     // Create button and checkbox
     m_reloadButton = new LoadingButton("Reload", this);
+    m_reloadButton->setToolTip("Reload tasks for " + QtUtils::CurrentUser::FullName());
     m_reloadButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     m_doneCheckBox = new QCheckBox("Done", this);
+    m_doneCheckBox->setToolTip("Check this to load only done tasks.");
 
     // Create layout
     m_layout = new QHBoxLayout(this);
