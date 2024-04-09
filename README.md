@@ -13,9 +13,12 @@ It uses [QTaskList](https://github.com/Elsombrerobot/QTaskList) as a submodule f
 
 # Screenshots and videos
 - Connection box
+
 ![alt text](doc/images/kitsu_connection_box.png)
 
+
 - Application
+
 ![alt text](doc/images/main_dark.png)
 ![alt text](doc/images/main_light.png)
 
