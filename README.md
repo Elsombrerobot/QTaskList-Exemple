@@ -11,7 +11,7 @@ It uses [QTaskList](https://github.com/Elsombrerobot/QTaskList) as a submodule f
 - Heavy use of Qt framework, including network requests.
 - Open a task in kitsu.
 
-# Screenshots and videos
+# Screenshots
 - Connection box
 
 ![alt text](doc/images/kitsu_connection_box.png)

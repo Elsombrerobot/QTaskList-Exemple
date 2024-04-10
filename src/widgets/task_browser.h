@@ -28,6 +28,9 @@ private:
     TaskTable* m_taskTable;
     TaskTableModel* m_taskModel;
     TaskTableFilterProxy* m_filterProxy;
+    QVBoxLayout* m_tableLayout;
+    QLabel* m_taskResumeLabel;
+    QWidget* m_tableWidget;
     TaskUtils::TaskList m_taskList;
 
 signals:
@@ -35,6 +38,7 @@ signals:
 
 private slots:
     void m_HandleAvailableTasks(QJsonArray tasksData);
+    void m_UpdateResumeLabel();
 };
 
 #endif // TASK_BROSWER_H

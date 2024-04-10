@@ -5,6 +5,7 @@
 #include <QList>
 #include <Qt>
 #include <QHBoxLayout>
+#include <QVBoxLayout>
 #include <QSizePolicy>
 #include <QJsonDocument>
 #include <QJsonArray>
@@ -44,25 +45,44 @@ TaskBrowser::TaskBrowser(QWidget* parent)
     m_taskFilter->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::MinimumExpanding);
 
     // TaskList, display the tasks in a form of a list.
+    m_taskResumeLabel = new QLabel(this);
+    m_taskResumeLabel->setText("Total : 0 | Shown : 0");
+    m_taskResumeLabel->setDisabled(true);
     m_taskModel = new TaskTableModel(&m_taskList, this);
-    m_taskTable = new TaskTable(m_mainSplitter);
+    m_taskTable = new TaskTable(this);
     m_filterProxy = new TaskTableFilterProxy(&m_taskFilter->currentFilter, this);
     m_taskTable->setModel(m_taskModel);
     m_taskTable->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     m_filterProxy->setSourceModel(m_taskModel);
     m_taskTable->setModel(m_filterProxy);
 
+    m_tableWidget = new QWidget(this);
+    m_tableLayout = new QVBoxLayout(m_tableWidget);
+    m_tableLayout->setContentsMargins(0,0,0,0);
+    m_tableLayout->addWidget(m_taskResumeLabel);
+    m_tableLayout->addWidget(m_taskTable);
+    m_mainSplitter->addWidget(m_tableWidget);
+
     // Set the stretch factors for the splitters
     m_mainSplitter->setStretchFactor(1, 1);
 
     // Set disabled on tasks loading started.
-    connect(m_TaskLoader, &TaskLoader::ReloadStarted, this, [this]() {setDisabled(true);});
+    connect(m_TaskLoader,
+        &TaskLoader::ReloadStarted,
+        this,
+        [this]() {setDisabled(true);});
 
     // Set enabled on tasks loading finished.
-    connect(m_TaskLoader, &TaskLoader::ReloadFinished, this, [this]() {setEnabled(true);});
+    connect(m_TaskLoader,
+        &TaskLoader::ReloadFinished,
+        this,
+        [this]() {setEnabled(true);});
 
     // On tasks available create the task list to pass to the filter and the view.
-    connect(m_TaskLoader, SIGNAL(TasksAvailable(QJsonArray)), this, SLOT(m_HandleAvailableTasks(QJsonArray)));
+    connect(m_TaskLoader, 
+        SIGNAL(TasksAvailable(QJsonArray)),
+        this,
+        SLOT(m_HandleAvailableTasks(QJsonArray)));
 
     // On task list ready, send pointer to filter.
     connect(this,
@@ -81,6 +101,17 @@ TaskBrowser::TaskBrowser(QWidget* parent)
         SIGNAL(SelectedFiltersChanged(TaskUtils::FilterMap*)),
         m_filterProxy,
         SLOT(RefreshFilter()));
+
+    // On filter updated by user, refresh task resume label, aswell as on model reset.
+    connect(m_taskModel,
+        SIGNAL(modelReset()),
+        this,
+        SLOT(m_UpdateResumeLabel()));
+
+    connect(m_taskFilter,
+        SIGNAL(SelectedFiltersChanged(TaskUtils::FilterMap*)),
+        this,
+        SLOT(m_UpdateResumeLabel()));
 }
 
 // Transform data into object, and emit pointer to task list when done for filter and the view to use the objects.
@@ -92,4 +123,13 @@ void TaskBrowser::m_HandleAvailableTasks(QJsonArray tasksData)
         m_taskList.emplaceBack(item.toObject());
     }
     emit TaskListReady(&m_taskList);
+};
+
+// Update resume label with current info.
+void TaskBrowser::m_UpdateResumeLabel()
+{
+    m_taskResumeLabel->setText("Total : " + 
+           QString::number(m_taskList.size()) +
+           " | Shown : " +
+           QString::number(m_filterProxy->rowCount()));
 };

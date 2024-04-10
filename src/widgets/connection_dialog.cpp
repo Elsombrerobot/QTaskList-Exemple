@@ -50,6 +50,11 @@ ConnectionDialog::ConnectionDialog(QWidget* parent) : QDialog(parent)
 
 	setMinimumWidth(400);
 
+	// TO REMOVE
+	m_kitsuApiUrlLineEdit->setText("http://172.19.80.178");
+	m_mailLineEdit->setText("iammarcferrer@gmail.com");
+	m_passwordLineEdit->setText("password");
+
 	// Connections
 
 	// Attempt connection on click.
