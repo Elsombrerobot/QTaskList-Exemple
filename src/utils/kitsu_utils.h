@@ -20,6 +20,9 @@ namespace KitsuUtils
         inline QString UserTasks = "/api/data/persons/{person_id}/tasks";
         inline QString UserDoneTasks = "/api/data/persons/{person_id}/done-tasks";
         inline QString TaskUrl = "/productions/{project_id}/shots/tasks/{task_id}";
+        inline QString ShotUrl = "/productions/{project_id}/shots/{shot_id}";
+        inline QString AssetUrl = "/productions/{project_id}/assets/{asset_id}";
+        inline QString EpisodeUrl = "/productions/{project_id}/episodes/{episode_id}/shots";
     }
 
     class Api : public QObject
@@ -34,8 +37,10 @@ namespace KitsuUtils
         static void Auth(QString email, QString password);
         static void GetTasks(bool done);
         static QString GetRoute(QString route, const QtUtils::QStrMap& formatData = {});
-        static QString GetTaskUrl(QString projectId, QString taskId);
         static void OpenTaskInBrowser(const TaskUtils::Task& task);
+        static void OpenShotInBrowser(const TaskUtils::Task& task);
+        static void OpenAssetInBrowser(const TaskUtils::Task& task);
+        static void OpenEpisodeInBrowser(const TaskUtils::Task& task);
 
     private:
         explicit Api(QObject* parent = nullptr);

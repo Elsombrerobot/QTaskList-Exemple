@@ -223,24 +223,76 @@ namespace KitsuUtils
         emit GetTasksSuccess(replyData);
     }
 
-    // Get url of the task on kitsu for given id. This does not require a netowrk request, it simply formats a url.
-    QString Api::GetTaskUrl(QString projectId, QString taskId)
+    // Open the task in the browser.
+    void Api::OpenTaskInBrowser(const TaskUtils::Task& task)
     {
         // Create route with current user id and project id
         QtUtils::QStrMap formatData;
-        formatData["task_id"] = taskId;
-        formatData["project_id"] = projectId;
+        formatData["task_id"] = task.GetRaw("id");
+        formatData["project_id"] = task.GetRaw("project_id");
 
         // Format route with data
-        return Api::GetRoute(Routes::TaskUrl, formatData);
+        QUrl url = Api::GetRoute(Routes::TaskUrl, formatData);
+
+        // Open url.
+        QDesktopServices::openUrl(url);
     }
 
-    // Get url of the task on kitsu for given id. This does not require a netowrk request, it simply formats a url.
-    void Api::OpenTaskInBrowser(const TaskUtils::Task& task)
+    // Open the shot of the task in the browser.
+    void Api::OpenShotInBrowser(const TaskUtils::Task& task)
     {
-        QUrl url = GetTaskUrl(task.GetRaw("project_id"), task.GetRaw("project_id"));
+
+        // Create route with current user id and project id
+        QtUtils::QStrMap formatData;
+        formatData["shot_id"] = task.GetRaw("entity_id");
+        formatData["project_id"] = task.GetRaw("project_id");
+
+        // Format route with data
+        QUrl url = Api::GetRoute(Routes::ShotUrl, formatData);
+        
+        // Add data to the url to open on the infos tab instead of casting tab.
+        QUrlQuery qqurl;
+        qqurl.addQueryItem("section", "infos");
+        url.setQuery(qqurl);
+
+        // Open url.
+        QDesktopServices::openUrl(url);
+    }
+
+    // Open the shot of the task in the browser.
+    void Api::OpenAssetInBrowser(const TaskUtils::Task& task)
+    {
+        // Create route with current user id and project id
+        QtUtils::QStrMap formatData;
+        formatData["asset_id"] = task.GetRaw("entity_id");
+        formatData["project_id"] = task.GetRaw("project_id");
+
+        // Format route with data
+        QUrl url = Api::GetRoute(Routes::ShotUrl, formatData);
+
+        // Add data to the url to open on the infos tab.
+        QUrlQuery qqurl;
+        qqurl.addQueryItem("section", "infos");
+        url.setQuery(qqurl);
+
+        // Open url.
+        QDesktopServices::openUrl(url);
+    }
+
+    // Open the episode of the task in the browser.
+    void Api::OpenEpisodeInBrowser(const TaskUtils::Task& task)
+    {
+        // Create route with current user id and project id
+        QtUtils::QStrMap formatData;
+        formatData["episode_id"] = task.GetRaw("episode_id");
+        formatData["project_id"] = task.GetRaw("project_id");
+
+        // Format route with data
+        QUrl url = Api::GetRoute(Routes::EpisodeUrl, formatData);
 
         // Open url.
         QDesktopServices::openUrl(url);
     }
 }
+
+

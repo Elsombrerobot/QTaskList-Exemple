@@ -20,13 +20,42 @@ TaskContextMenu::TaskContextMenu(const TaskUtils::Task& onTask,
     QMenu* openInBrowserMenu = this->addMenu("Open in browser...");
     openInBrowserMenu->setIcon(QIcon(":/kitsu"));
 
-    // Open action
-    QAction* openInKitsuAction = openInBrowserMenu->addAction("Task");
+    // Open actions
+    QAction* openEpisodeInKitsuAction = openInBrowserMenu->addAction("Episode");
 
-    // Emit the signal informing that open task has been requested.
-    connect(openInKitsuAction,
+    // Hide shot or asset action based on entity type.
+    QAction* openShotInKitsuAction = openInBrowserMenu->addAction("Shot");
+    openShotInKitsuAction->setVisible(onTask.Field(TaskUtils::Fields::Entity) == "Shot");
+    QAction* openAssetInKitsuAction = openInBrowserMenu->addAction("Asset");
+    openAssetInKitsuAction->setVisible(onTask.Field(TaskUtils::Fields::Entity) == "Asset");
+
+    QAction* openTaskInKitsuAction = openInBrowserMenu->addAction("Task");
+
+    // Open task action.
+    connect(openTaskInKitsuAction,
             &QAction::triggered,
             this,
             [this, onTask]() {KitsuUtils::Api::OpenTaskInBrowser(onTask); }
+    );
+
+    // Open episode action.
+    connect(openEpisodeInKitsuAction,
+        &QAction::triggered,
+        this,
+        [this, onTask]() {KitsuUtils::Api::OpenEpisodeInBrowser(onTask); }
+    );
+
+    // Open shot action.
+    connect(openShotInKitsuAction,
+        &QAction::triggered,
+        this,
+        [this, onTask]() {KitsuUtils::Api::OpenShotInBrowser(onTask); }
+    );
+
+    // Open asset action.
+    connect(openAssetInKitsuAction,
+        &QAction::triggered,
+        this,
+        [this, onTask]() {KitsuUtils::Api::OpenAssetInBrowser(onTask); }
     );
 };
