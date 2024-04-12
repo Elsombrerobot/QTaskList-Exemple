@@ -8,6 +8,7 @@
 
 #include "network_utils.h"
 #include "qt_utils.h"
+#include "task_utils.h"
 
 namespace KitsuUtils
 {
@@ -18,6 +19,7 @@ namespace KitsuUtils
         inline QString Api = "/api";
         inline QString UserTasks = "/api/data/persons/{person_id}/tasks";
         inline QString UserDoneTasks = "/api/data/persons/{person_id}/done-tasks";
+        inline QString TaskUrl = "/productions/{project_id}/shots/tasks/{task_id}";
     }
 
     class Api : public QObject
@@ -32,6 +34,8 @@ namespace KitsuUtils
         static void Auth(QString email, QString password);
         static void GetTasks(bool done);
         static QString GetRoute(QString route, const QtUtils::QStrMap& formatData = {});
+        static QString GetTaskUrl(QString projectId, QString taskId);
+        static void OpenTaskInBrowser(const TaskUtils::Task& task);
 
     private:
         explicit Api(QObject* parent = nullptr);

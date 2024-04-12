@@ -57,6 +57,8 @@ qt_add_executable($ENV{PRJ_PROJECT_NAME}
 	src/widgets/task_loader.cpp
 	src/widgets/task_browser.h
 	src/widgets/task_browser.cpp
+	src/widgets/task_menu.h
+	src/widgets/task_menu.cpp
 	
 	# App resources
 	${APP_ICON_RESOURCE_CPP}

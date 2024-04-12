@@ -6,6 +6,7 @@
 #include <QWidget>
 #include <QSplitter>
 #include <QTableView>
+#include <QContextMenuEvent>
 
 #include "task_loader.h"
 #include "task_list.h"
@@ -26,8 +27,6 @@ private:
     TaskLoader* m_TaskLoader;
     TaskFilter* m_taskFilter;
     TaskTable* m_taskTable;
-    TaskTableModel* m_taskModel;
-    TaskTableFilterProxy* m_filterProxy;
     QVBoxLayout* m_tableLayout;
     QLabel* m_taskResumeLabel;
     QWidget* m_tableWidget;
@@ -37,6 +36,7 @@ signals:
      void TaskListReady(TaskUtils::TaskList*);
 
 private slots:
+    void m_HandlTaskMenuRequest(const TaskUtils::Task& onTask, TaskUtils::TaskConstRefList selectedTasks, QContextMenuEvent* event);
     void m_HandleAvailableTasks(QJsonArray tasksData);
     void m_UpdateResumeLabel();
 };

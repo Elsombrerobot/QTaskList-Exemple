@@ -4,10 +4,14 @@
 #include <QByteArray>
 #include <QJsonObject>
 #include <QJsonDocument>
+#include <QUrl>
+#include <QDesktopServices>
+#include <QMessageBox>
 
 #include "kitsu_utils.h"
 #include "qt_utils.h"
 #include "network_utils.h"
+#include "task_utils.h"
 
 // Function and utils related to kitsu, api, tasks..
 namespace KitsuUtils
@@ -116,7 +120,8 @@ namespace KitsuUtils
         // Connect request to api response handler.
         connect(reply, SIGNAL(finished()), &Get(), SLOT(m_HandleAuthResponse()));
     }
-       
+    
+    // Handle auth response success or error.
     void Api::m_HandleAuthResponse()
     {
         // Extract reply from sender
@@ -216,5 +221,26 @@ namespace KitsuUtils
 
         // Get tasks successful, emit tasks data
         emit GetTasksSuccess(replyData);
+    }
+
+    // Get url of the task on kitsu for given id. This does not require a netowrk request, it simply formats a url.
+    QString Api::GetTaskUrl(QString projectId, QString taskId)
+    {
+        // Create route with current user id and project id
+        QtUtils::QStrMap formatData;
+        formatData["task_id"] = taskId;
+        formatData["project_id"] = projectId;
+
+        // Format route with data
+        return Api::GetRoute(Routes::TaskUrl, formatData);
+    }
+
+    // Get url of the task on kitsu for given id. This does not require a netowrk request, it simply formats a url.
+    void Api::OpenTaskInBrowser(const TaskUtils::Task& task)
+    {
+        QUrl url = GetTaskUrl(task.GetRaw("project_id"), task.GetRaw("project_id"));
+
+        // Open url.
+        QDesktopServices::openUrl(url);
     }
 }

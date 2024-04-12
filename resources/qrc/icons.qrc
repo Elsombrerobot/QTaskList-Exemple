@@ -1,5 +1,6 @@
 <RCC>
 <qresource>
 	<file alias="app_icon">../icons/app_icon.ico</file>
+	<file alias="kitsu">../icons/kitsu.ico</file>
 </qresource>
 </RCC>
