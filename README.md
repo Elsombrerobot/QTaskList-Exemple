@@ -8,8 +8,8 @@ It uses [QTaskList](https://github.com/Elsombrerobot/QTaskList) as a submodule f
 - Display tasks in a list fashion.
 - Filter and sort your tasks as preferred.
 - Dark / light theme following OS theme.
-- Heavy use of Qt framework, including network requests.
-- Open a task in kitsu.
+- Heavy use of Qt framework, including for network requests.
+- Open a task / asset / episode or production in kitsu.
 
 # Screenshots
 - Connection box
