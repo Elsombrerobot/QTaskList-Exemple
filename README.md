@@ -42,7 +42,7 @@ It uses [QTaskList](https://github.com/Elsombrerobot/QTaskList) as a submodule f
 
 # Compile
 - Make sure  Qt **msvc2019** component is installed, at this time this is latest.
-- Make sure Qt installation is in `Path` varenv, example : `D:\Qt\6.6.2\msvc2019_64\bin`.
+- Make sure Qt installation is in `Path` varenv, exemple : `D:\Qt\6.6.2\msvc2019_64\bin`.
 - Create a directory for the project `mkdir QTaskListProject` and `cd QTaskListProject`.
 - Clone the modules and its submodule : `git clone https://github.com/Elsombrerobot/QTaskList-Exemple --recurse-submodules`
 - `cd QTaskList-Exemple`
@@ -61,5 +61,4 @@ It uses [QTaskList](https://github.com/Elsombrerobot/QTaskList) as a submodule f
 If you have correctly setup your `Path` for Qt, you can debug and run inside **MSVC**.
 
 # Todo
-* [ ] Upload executable.
-* [ ] Tag versions, starting a first realease.
+* [ ] Hide console window.

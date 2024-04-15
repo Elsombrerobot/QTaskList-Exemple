@@ -11,7 +11,7 @@
 namespace QtUtils
 {
     // Define application name.
-    #define APPLICATION_NAME "QTaskListExemple"
+    #define APPLICATION_NAME "QTaskList-Exemple"
 
     // Create a QApplication with all needed configuration.
     QApplication* CreateQApp(int& argc, char** argv)
