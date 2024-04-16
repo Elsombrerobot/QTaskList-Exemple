@@ -65,4 +65,3 @@ Executable is available in releases.
 If you have correctly setup your `Path` for Qt, you can debug and run inside **MSVC**.
 
 # Todo
-* [ ] Hide console window.
