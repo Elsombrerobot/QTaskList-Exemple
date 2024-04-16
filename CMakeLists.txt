@@ -14,11 +14,6 @@ set(CMAKE_INSTALL_PREFIX  ${CMAKE_CURRENT_BINARY_DIR}/bin/$ENV{PRJ_PROJECT_NAME}
 # Set QTaskListExemple to be default on Visual Studio.
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT $ENV{PRJ_PROJECT_NAME})
 
-# Prevent the creation of a console window on Windows
-# set_target_properties($ENV{PRJ_PROJECT_NAME} PROPERTIES
-#    WIN32_EXECUTABLE ON
-# )
-
 # --------- Qt6 ---------
 
 # Find qt6 and needed components
@@ -63,6 +58,11 @@ qt_add_executable($ENV{PRJ_PROJECT_NAME}
 	# App resources
 	${APP_ICON_RESOURCE_CPP}
 )
+
+# Prevent the creation of a console window on Windows in release mode.
+ set_target_properties($ENV{PRJ_PROJECT_NAME} PROPERTIES
+    WIN32_EXECUTABLE ON
+ )
 
 target_include_directories($ENV{PRJ_PROJECT_NAME} INTERFACE
 	${CMAKE_CURRENT_SOURCE_DIR}/src/utils

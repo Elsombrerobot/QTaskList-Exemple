@@ -40,7 +40,11 @@ It uses [QTaskList](https://github.com/Elsombrerobot/QTaskList) as a submodule f
 - A Kitsu instance to query, tested with version `0.19.15` of Zou api.
 - I recommend https://gitlab.com/mathbou/docker-cgwire, to avoid inputing sensitive informations into a random git project...
 
-# Compile
+# Run
+
+Executable is available in releases.
+
+## Build from source
 - Make sure  Qt **msvc2019** component is installed, at this time this is latest.
 - Make sure Qt installation is in `Path` varenv, exemple : `D:\Qt\6.6.2\msvc2019_64\bin`.
 - Create a directory for the project `mkdir QTaskListProject` and `cd QTaskListProject`.
@@ -57,7 +61,7 @@ It uses [QTaskList](https://github.com/Elsombrerobot/QTaskList) as a submodule f
 
 `build_windows/bin/QTaskListExemple` is the standalone app folder.
 
-# Run
+## MSCV Run
 If you have correctly setup your `Path` for Qt, you can debug and run inside **MSVC**.
 
 # Todo
