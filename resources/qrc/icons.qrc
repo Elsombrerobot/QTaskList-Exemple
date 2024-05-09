@@ -2,5 +2,7 @@
 <qresource>
 	<file alias="app_icon">../icons/app_icon.ico</file>
 	<file alias="kitsu">../icons/kitsu.ico</file>
+	<file alias="fr_FR">../icons/flags/french.png</file>
+	<file alias="en_UK">../icons/flags/united_kingdom.png</file>
 </qresource>
 </RCC>

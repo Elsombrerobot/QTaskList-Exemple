@@ -9,6 +9,7 @@
 
 #include "main_window.h"
 #include "task_browser.h"
+#include "menu_bar.h"
 #include "../utils/qt_utils.h"
 
 // A Simple main window to contain the main widget TaskBrowser.
@@ -25,9 +26,11 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
 
 	// Widget setup
 	m_statusBar = new QStatusBar(this);
+	m_menuBar = new MenuBar(this);
 	setStatusBar(m_statusBar);
+	setMenuBar(m_menuBar);
 	setCentralWidget(m_taskBrowser);
 
-	// Show message
-	m_statusBar->showMessage("Connection as " + QtUtils::CurrentUser::FullName() + " successful !", 4000);
+	// Show connection message
+	m_statusBar->showMessage(QString(tr("Connection as %1 successfull!")).arg(QtUtils::CurrentUser::FullName()), 4000);
 }

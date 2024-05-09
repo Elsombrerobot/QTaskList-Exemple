@@ -15,11 +15,12 @@
 TaskLoader::TaskLoader(QWidget* parent) : QWidget(parent)
 {
     // Create button and checkbox
-    m_reloadButton = new LoadingButton("Reload", this);
-    m_reloadButton->setToolTip("Reload tasks for " + QtUtils::CurrentUser::FullName());
+    m_reloadButton = new LoadingButton(tr("Reload"), this);
+    
+    m_reloadButton->setToolTip(QString(tr("Reload tasks for %1")).arg(QtUtils::CurrentUser::FullName()));
     m_reloadButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-    m_doneCheckBox = new QCheckBox("Done", this);
-    m_doneCheckBox->setToolTip("Check this to load only done tasks.");
+    m_doneCheckBox = new QCheckBox(tr("Done"), this);
+    m_doneCheckBox->setToolTip(tr("Check this to load only done tasks."));
 
     // Create layout
     m_layout = new QHBoxLayout(this);
@@ -61,7 +62,7 @@ void TaskLoader::m_HandleLoadTasksError(QString response)
     m_reloadButton->StopLoading();
     emit ReloadFinished();
     emit TasksAvailable(QJsonArray());
-    QMessageBox::warning(this, "Error", response);
+    QMessageBox::warning(this, tr("Error"), response);
     setDisabled(false);
 }
 

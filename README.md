@@ -50,13 +50,13 @@ Executable is available in releases.
 - Create a directory for the project `mkdir QTaskListProject` and `cd QTaskListProject`.
 - Clone the modules and its submodule : `git clone https://github.com/Elsombrerobot/QTaskList-Exemple --recurse-submodules`
 - `cd QTaskList-Exemple`
-- Run `make.bat` with `make`, it will create an out of source build in `build_windows.`
+- Run `scripts\make`, it will create an out of source build in `build_windows.`
 - Create the executable : 
 - Via **MSVC**
 	- Open `build_windows/QTaskListExemple.sln` with MSVC
 	- Find the `INSTALL` project in the solution explorer, **right click** and **build**.. 
 - Via **cmd**
-	- Run `install.bat` with `install release` (or `debug`)
+	- Run `scripts\install.bat` with `scripts\install release` (or `debug`)
 - Execute `build_windows/bin/QTaskListExemple/bin/QTaskListExemple.exe`.
 
 `build_windows/bin/QTaskListExemple` is the standalone app folder.

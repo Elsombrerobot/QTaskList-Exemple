@@ -49,7 +49,6 @@ TaskBrowser::TaskBrowser(QWidget* parent)
 
     // Show infos about currents task list.
     m_taskResumeLabel = new QLabel(this);
-    m_taskResumeLabel->setText("Total : 0 | Shown : 0 | Selected : 0");
     m_taskResumeLabel->setDisabled(true); // Just for dimmer color.
 
     // TaskList, display the tasks in a form of a list.
@@ -124,6 +123,8 @@ TaskBrowser::TaskBrowser(QWidget* parent)
         SIGNAL(TaskContextMenuRequested(const TaskUtils::Task&, TaskUtils::TaskConstRefList, QContextMenuEvent*)),
         this,
         SLOT(m_HandlTaskMenuRequest(const TaskUtils::Task&, TaskUtils::TaskConstRefList, QContextMenuEvent*)));
+
+    m_UpdateResumeLabel();
 }
 
 // Transform data into object, and emit pointer to task list when done for filter and the view to use the objects.
@@ -140,12 +141,11 @@ void TaskBrowser::m_HandleAvailableTasks(QJsonArray tasksData)
 // Update resume label with current info.
 void TaskBrowser::m_UpdateResumeLabel()
 {
-    m_taskResumeLabel->setText("Total : " + 
-           QString::number(m_taskList.size()) +
-           " | Shown : " +
-           QString::number(m_taskTable->filterProxy->rowCount()) +
-           " | Selected : " +
-           QString::number(m_taskTable->selectionModel()->selectedRows().size()));
+    QString resume = QString(tr("Total : %1 | Shown : %2 | Selected : %3"))
+        .arg(QString::number(m_taskList.size()))
+        .arg(QString::number(m_taskTable->filterProxy->rowCount()))
+        .arg(QString::number(m_taskTable->selectionModel()->selectedRows().size()));
+    m_taskResumeLabel->setText(resume);
 };
 
 // Update resume label with current info.

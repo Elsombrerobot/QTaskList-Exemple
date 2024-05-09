@@ -17,19 +17,19 @@ TaskContextMenu::TaskContextMenu(const TaskUtils::Task& onTask,
     labelAction->setEnabled(false);
 
     // Sub menu open in browser
-    QMenu* openInBrowserMenu = this->addMenu("Open in browser...");
+    QMenu* openInBrowserMenu = this->addMenu(tr("Open in browser..."));
     openInBrowserMenu->setIcon(QIcon(":/kitsu"));
 
     // Open actions
-    QAction* openEpisodeInKitsuAction = openInBrowserMenu->addAction("Episode");
+    QAction* openEpisodeInKitsuAction = openInBrowserMenu->addAction(tr("Episode"));
 
     // Hide shot or asset action based on entity type.
-    QAction* openShotInKitsuAction = openInBrowserMenu->addAction("Shot");
+    QAction* openShotInKitsuAction = openInBrowserMenu->addAction(tr("Shot"));
     openShotInKitsuAction->setVisible(onTask.Field(TaskUtils::Fields::Entity) == "Shot");
     QAction* openAssetInKitsuAction = openInBrowserMenu->addAction("Asset");
     openAssetInKitsuAction->setVisible(onTask.Field(TaskUtils::Fields::Entity) == "Asset");
 
-    QAction* openTaskInKitsuAction = openInBrowserMenu->addAction("Task");
+    QAction* openTaskInKitsuAction = openInBrowserMenu->addAction(tr("Task"));
 
     // Open task action.
     connect(openTaskInKitsuAction,

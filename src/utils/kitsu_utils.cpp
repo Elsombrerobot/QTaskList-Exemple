@@ -70,7 +70,7 @@ namespace KitsuUtils
         // Check for network errors
 	    if (reply->error() != QNetworkReply::NoError)
 	    {
-            QString message = "Can't connect to " + Api::BaseUrl() + " : " + reply->errorString();
+            QString message = QString(tr("Can't connect to %1 : %2")).arg(Api::BaseUrl()).arg(reply->errorString());
             emit ValidateApiError(message);
             return;
 
@@ -80,7 +80,7 @@ namespace KitsuUtils
         QJsonObject replyData = NetworkUtils::ReadJsonReply(reply);
         if (replyData.isEmpty())
         {
-            QString message = "Failed to read server response.";
+            QString message = tr("Failed to read server response.");
             emit ValidateApiError(message);
             return;
 
@@ -94,12 +94,12 @@ namespace KitsuUtils
 	    // Check if the "api" value matches the expected "Zou" value
 	    if (apiValue.toString() != expectedApiValue)
 	    {
-            QString message = "URL is not a Kitsu API instance: " + reply->url().toString();
+            QString message = QString(tr("URL is not a Kitsu API instance: %1")).arg(reply->url().toString());
             emit ValidateApiError(message);
 		    return;
 	    }
 
-        // Success
+        // Emit success
         emit ValidateApiSuccess();
 
         // Clean reply
@@ -135,7 +135,7 @@ namespace KitsuUtils
         // Check for network errors
         if (reply->error() != QNetworkReply::NoError)
         {
-            QString message = "Connection to " + baseUrl.toString() + " failed, verify login and password.";
+            QString message = QString(tr("Connection to %1 failed, verify login and password.")).arg(baseUrl.toString());
             emit AuthError(message);
             return;
         }
@@ -144,7 +144,7 @@ namespace KitsuUtils
         QJsonObject replyData = NetworkUtils::ReadJsonReply(reply);
         if (replyData.isEmpty())
         {
-            QString message = "Failed to read server response.";
+            QString message = tr("Failed to read server response.");
             emit AuthError(message);
             return;
         }
@@ -157,7 +157,7 @@ namespace KitsuUtils
         // Check if the "api" value matches the expected "Zou" value
         if (!apiValue.isBool() || apiValue.toBool() != expectedApiValue)
         {
-            QString message = "Connection to " + baseUrl.toString() + " failed, unknown reason.";
+            QString message = QString(tr("Connection to %1 failed, unknown reason.")).arg(baseUrl.toString());
             emit AuthError(message);
             return;
         }
@@ -165,7 +165,7 @@ namespace KitsuUtils
         // Clean reply
         reply->deleteLater();
 
-        // Connection successful, emit user data
+        // Emit user data.
         emit AuthSuccess(replyData);
     }
 
@@ -202,7 +202,7 @@ namespace KitsuUtils
         // Check for network errors
         if (reply->error() != QNetworkReply::NoError)
         {
-            QString message = "Failed to fetch tasks : " + reply->errorString();
+            QString message = QString(tr("Failed to fetch tasks : %1")).arg(reply->errorString());
             emit GetTasksError(message);
             return;
         }
@@ -211,7 +211,7 @@ namespace KitsuUtils
         QJsonArray replyData = NetworkUtils::ReadArrayReply(reply);
         if (replyData.isEmpty())
         {
-            QString message = "Failed to read server response.";
+            QString message = tr("Failed to read server response.");
             emit GetTasksError(message);
             return;
         }
