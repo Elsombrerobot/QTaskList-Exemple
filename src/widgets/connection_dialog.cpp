@@ -31,11 +31,13 @@ ConnectionDialog::ConnectionDialog(QWidget* parent) : QDialog(parent)
 	m_kitsuApiUrlLineEdit = new QLineEdit(this);
 	m_kitsuApiUrlLineEdit->setPlaceholderText("https://kitsu.my_studio.com");
 	m_kitsuApiUrlLineEdit->setClearButtonEnabled(true);
+	m_kitsuApiUrlLineEdit->setText(QtUtils::Settings::Read(QtUtils::Settings::Keys::LastKitsuUrlUsed).toString()); // Set text to last url used.
 	m_layout->addWidget(m_kitsuApiUrlLineEdit);
 
 	m_mailLineEdit = new QLineEdit(this);
 	m_mailLineEdit->setPlaceholderText("name@company.com");
 	m_mailLineEdit->setClearButtonEnabled(true);
+	m_mailLineEdit->setText(QtUtils::Settings::Read(QtUtils::Settings::Keys::LastMailUsed).toString()); // Set text to last mail used.
 	m_layout->addWidget(m_mailLineEdit);
 
 	m_passwordLineEdit = new QLineEdit(this);
@@ -47,6 +49,12 @@ ConnectionDialog::ConnectionDialog(QWidget* parent) : QDialog(parent)
 	m_connectButton = new LoadingButton("Connect", this);
 	//m_connectButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 	m_layout->addWidget(m_connectButton);
+
+	// Set correct focus on password if settings are remembered for email and kitsu url field
+	if (!m_kitsuApiUrlLineEdit->text().isEmpty())
+	{
+		m_passwordLineEdit->setFocus();
+	}
 
 	setMinimumWidth(400);
 
@@ -128,6 +136,12 @@ void ConnectionDialog::m_HandleAuthSuccess(QJsonObject userData)
 {
 	// Set user for application
 	QtUtils::CurrentUser::Set(userData);
+
+	// Write url setting for next session, and emit success.
+	QtUtils::Settings::Write(QtUtils::Settings::Keys::LastKitsuUrlUsed, QVariant(KitsuUtils::Api::BaseUrl()));
+
+	// Write email setting for next session.
+	QtUtils::Settings::Write(QtUtils::Settings::Keys::LastMailUsed, QVariant(QtUtils::CurrentUser::Mail()));
 
 	setDisabled(false);
 	m_connectButton->StopLoading();

@@ -4,15 +4,12 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QIcon>
+#include <QSettings>
 
 #include "../utils/qt_utils.h"
-#include "../../src/version.h"
 
 namespace QtUtils
 {
-    // Define application name.
-    #define APPLICATION_NAME "QTaskList-Exemple"
-
     // Create a QApplication with all needed configuration.
     QApplication* CreateQApp(int& argc, char** argv)
     {
@@ -23,9 +20,25 @@ namespace QtUtils
 
         // Set application properties
         app->setWindowIcon(icon);
+        app->setOrganizationName("Elsombrerobot");
+        app->setApplicationVersion(QString(VERSION_STRING));
         app->setStyle("fusion");
         app->setApplicationName(APPLICATION_NAME);
         return app;
+    }
+
+    // Write a session persistent setting that can be retrived with Setting::Read
+    void Settings::Write(const QString& group, QVariant value)
+    {
+        QSettings settings = QSettings(QSettings::UserScope, qApp);
+        settings.setValue(group, value);
+    }
+
+    // Read a session persistent setting written with Setting::Write
+    QVariant Settings::Read(const QString& group, QVariant defaultValue)
+    {
+        QSettings settings = QSettings(QSettings::UserScope, qApp);
+        return settings.value(group, defaultValue);
     }
 
     // Get the window name with app name, verison, and current user if current user.
@@ -80,6 +93,12 @@ namespace QtUtils
     QString CurrentUser::Id()
     { 
         return Data()["user"].toObject()["id"].toString();
+    }
+
+    // Get the kitsu Mail of the current user.
+    QString CurrentUser::Mail()
+    {
+        return Data()["user"].toObject()["email"].toString();
     }
 
     // Get the kitsu access token of the current user for this session.

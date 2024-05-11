@@ -1,6 +1,7 @@
 # QTastList-Exemple
 The application connect to a running [Kitsu](https://www.cg-wire.com/fr/kitsu) instance, to display user tasks.
 It uses [QTaskList](https://github.com/Elsombrerobot/QTaskList) as a submodule for the main filtering widget, and displaying widget.
+This project exists for learning purposes.
 
 ## Features
 
@@ -9,6 +10,7 @@ It uses [QTaskList](https://github.com/Elsombrerobot/QTaskList) as a submodule f
 - Filter and sort your tasks as preferred.
 - Dark / light theme following OS theme.
 - Heavy use of Qt framework, including for network requests.
+- Persistent insensitive login data 
 - Open a task / asset / episode or production in kitsu.
 
 # Screenshots
@@ -19,8 +21,7 @@ It uses [QTaskList](https://github.com/Elsombrerobot/QTaskList) as a submodule f
 
 - Application
 
-![alt text](doc/images/main_dark.png)
-![alt text](doc/images/main_light.png)
+![alt text](doc/images/main_dark_light.png)
 
 # Requirements
 
@@ -33,7 +34,7 @@ It uses [QTaskList](https://github.com/Elsombrerobot/QTaskList) as a submodule f
 
 - Tested only for **windows 10 x64**.
 - Build tested only for **msvc community 2022**.
-- Code only tested with **VC 17**.
+- Code only tested with **C++17**.
 
 ## Other
 
@@ -65,3 +66,4 @@ Executable is available in releases.
 If you have correctly setup your `Path` for Qt, you can debug and run inside **MSVC**.
 
 # Todo
+- [ ] Translation
