@@ -13,7 +13,12 @@ This project exists for learning purposes.
 - Persistent insensitive login data 
 - Open a task / asset / episode or production in kitsu.
 
-# Screenshots
+# Screenshots / Videos
+
+- Demo
+
+https://github.com/user-attachments/assets/766abc7b-345d-4fad-94f6-93a50ef9e5f1
+
 - Connection box
 
 ![alt text](doc/images/kitsu_connection_box.png)
